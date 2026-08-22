@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TravelMate – Sign In</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-body d-flex flex-column min-vh-100 justify-content-center py-5">
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-5">
+        
+        <!-- Brand Logo Header -->
+        <div class="text-center mb-4">
+          <a href="index.html" class="d-inline-flex align-items-center gap-2 text-decoration-none text-main mb-2">
+            <i class="bi bi-compass-fill text-primary fs-1"></i>
+            <span class="fs-3 fw-extrabold">TravelMate</span>
+          </a>
+          <p class="text-muted small mb-0">Smart Tourist Day-Visit Planner &bull; Atulugama 25km Region</p>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="card border shadow-lg rounded-4 overflow-hidden bg-card">
+          <div class="card-header bg-card border-bottom p-4 pb-3">
+            <h4 class="fw-bold mb-1 text-main">Welcome Back</h4>
+            <p class="text-muted small mb-0">Sign in to save and manage your personalized day travel itineraries.</p>
+          </div>
+
+          <div class="card-body p-4">
+            
+            <!-- Quick Demo Credentials Box -->
+            <div class="p-3 bg-subtle rounded-3 border mb-4">
+              <span class="d-block fw-bold small text-primary mb-2">
+                <i class="bi bi-lightning-charge-fill text-warning me-1"></i> 1-Click Quick Demo Login:
+              </span>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" onclick="fillCredentials('tourist@travelmate.lk', 'password123')">
+                  <i class="bi bi-person-fill"></i> Tourist Demo
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm flex-grow-1" onclick="fillCredentials('admin@travelmate.lk', 'adminpassword')">
+                  <i class="bi bi-shield-lock-fill"></i> Admin Demo
+                </button>
+              </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" novalidate>
+              <div id="loginAlert" class="alert alert-danger d-none small py-2"></div>
+
+              <div class="mb-3">
+                <label for="emailInput" class="form-label fw-semibold small text-main">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-subtle"><i class="bi bi-envelope"></i></span>
+                  <input type="email" class="form-control" id="emailInput" required placeholder="name@example.com">
+                </div>
+                <div class="invalid-feedback">Please enter a valid email address.</div>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex justify-content-between">
+                  <label for="passwordInput" class="form-label fw-semibold small text-main">Password</label>
+                </div>
+                <div class="input-group">
+                  <span class="input-group-text bg-subtle"><i class="bi bi-lock"></i></span>
+                  <input type="password" class="form-control" id="passwordInput" required placeholder="••••••••">
+                  <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">
+                    <i id="passwordToggleIcon" class="bi bi-eye"></i>
+                  </button>
+                </div>
+                <div class="invalid-feedback">Please enter your password.</div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" id="loginBtn">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Sign In to Account
+              </button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top text-center small text-muted">
+              Don't have an account? 
+              <a href="register.html" class="fw-bold text-primary text-decoration-none ms-1">Create Account</a>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="text-center mt-3">
+          <a href="index.html" class="text-muted small text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i> Return to Tourist Portal
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Theme sync
+    const currentTheme = localStorage.getItem('travelmate_theme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', currentTheme);
+
+    function fillCredentials(email, pwd) {
+      document.getElementById('emailInput').value = email;
+      document.getElementById('passwordInput').value = pwd;
+    }
+
+    function togglePasswordVisibility() {
+      const pwd = document.getElementById('passwordInput');
+      const icon = document.getElementById('passwordToggleIcon');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.className = 'bi bi-eye-slash';
+      } else {
+        pwd.type = 'password';
+        icon.className = 'bi bi-eye';
+      }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const alertBox = document.getElementById('loginAlert');
+
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+
+      const email = document.getElementById('emailInput').value;
+      const password = document.getElementById('passwordInput').value;
+
+      try {
+        const user = Auth.login(email, password);
+        if (user.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      } catch (err) {
+        alertBox.innerText = err.message;
+        alertBox.classList.remove('d-none');
+      }
+    });
+  </script>
+</body>
+</html>

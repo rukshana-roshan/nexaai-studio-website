@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TravelMate – Administrator Portal (CRUD Management)</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Admin Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top shadow-sm py-2">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="bi bi-shield-lock-fill text-primary fs-3"></i>
+        <div>
+          <span class="brand-title fs-5">TravelMate Admin</span>
+          <span class="badge bg-primary-subtle text-primary border ms-2">Management Portal</span>
+        </div>
+      </a>
+      
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <!-- Theme Toggle -->
+        <button id="themeToggleBtn" type="button" class="theme-toggle-btn" title="Toggle Light / Dark Mode">
+          <i id="themeToggleIcon" class="bi bi-moon-stars-fill"></i>
+        </button>
+
+        <a href="index.html" class="btn btn-outline-light btn-sm px-3">
+          <i class="bi bi-arrow-left me-1"></i> Back to Tourist Portal
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Admin Dashboard -->
+  <main class="container my-4">
+
+    <!-- Header Stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="stat-card d-flex align-items-center gap-3">
+          <div class="stat-icon bg-primary-subtle text-primary">
+            <i class="bi bi-geo-alt-fill"></i>
+          </div>
+          <div>
+            <span class="text-muted small d-block">Total Attractions</span>
+            <h3 class="fw-bold mb-0 text-main" id="statTotalCount">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card d-flex align-items-center gap-3">
+          <div class="stat-icon bg-success-subtle text-success">
+            <i class="bi bi-tags-fill"></i>
+          </div>
+          <div>
+            <span class="text-muted small d-block">Active Categories</span>
+            <h3 class="fw-bold mb-0 text-main" id="statTotalCategories">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="stat-card d-flex align-items-center gap-3">
+          <div class="stat-icon bg-warning-subtle text-warning">
+            <i class="bi bi-clock-history"></i>
+          </div>
+          <div>
+            <span class="text-muted small d-block">Avg. Visiting Duration</span>
+            <h3 class="fw-bold mb-0 text-main" id="statAvgDuration">0.0 hrs</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Management Card & Table (FR-039 to FR-046) -->
+    <div class="card border-0 shadow-sm rounded-4 bg-card">
+      <div class="card-header bg-card border-bottom p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+          <div>
+            <h4 class="fw-bold mb-1 text-main">Tourist Attraction Database (CRUD)</h4>
+            <small class="text-muted">Manage all tourist locations, coordinates, descriptions, and durations around Atulugama.</small>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="input-group input-group-sm" style="max-width: 260px;">
+              <span class="input-group-text bg-subtle border-end-0"><i class="bi bi-search"></i></span>
+              <input type="text" id="adminTableSearch" class="form-control border-start-0 bg-subtle" placeholder="Filter records...">
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="AdminApp.resetData()" title="Restore Original 10 Attractions">
+              <i class="bi bi-arrow-counterclockwise"></i> Reset Seed
+            </button>
+            <button type="button" class="btn btn-primary btn-sm px-3 fw-semibold" onclick="AdminApp.openAddModal()">
+              <i class="bi bi-plus-lg"></i> Add Attraction
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light small text-uppercase text-muted">
+            <tr>
+              <th scope="col" style="width: 60px;">ID</th>
+              <th scope="col">Attraction & Location</th>
+              <th scope="col">Category</th>
+              <th scope="col">Distance</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Map Link</th>
+              <th scope="col" class="text-end" style="width: 140px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminTableBody">
+            <!-- Populated by admin.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Add / Edit Attraction Modal (FR-040, FR-042, FR-044, FR-045) -->
+  <div class="modal fade" id="attractionFormModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <form id="attractionForm" novalidate>
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold text-main" id="attractionModalHeaderTitle">Add New Tourist Attraction</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <input type="hidden" id="attractionIdInput">
+
+            <div class="row g-3">
+              <!-- Name -->
+              <div class="col-md-8">
+                <label for="nameInput" class="form-label fw-semibold small">Attraction Name *</label>
+                <input type="text" class="form-control" id="nameInput" required maxlength="150" placeholder="e.g. Pearl Bay, Bandaragama">
+                <div class="invalid-feedback">Please enter the attraction name.</div>
+              </div>
+
+              <!-- Category -->
+              <div class="col-md-4">
+                <label for="categoryInput" class="form-label fw-semibold small">Category *</label>
+                <select class="form-select" id="categoryInput" required>
+                  <option value="Recreation">Recreation</option>
+                  <option value="Adventure">Adventure</option>
+                  <option value="Nature / Scenic">Nature / Scenic</option>
+                  <option value="Beach">Beach</option>
+                  <option value="Beach / Nature">Beach / Nature</option>
+                  <option value="Religious / Cultural">Religious / Cultural</option>
+                  <option value="Historical">Historical</option>
+                  <option value="Nature / Waterfall">Nature / Waterfall</option>
+                </select>
+                <div class="invalid-feedback">Please select a category.</div>
+              </div>
+
+              <!-- Location -->
+              <div class="col-md-6">
+                <label for="locationInput" class="form-label fw-semibold small">Location / Town *</label>
+                <input type="text" class="form-control" id="locationInput" required maxlength="150" placeholder="e.g. Bandaragama, Kalutara District">
+                <div class="invalid-feedback">Please specify the location.</div>
+              </div>
+
+              <!-- Image URL -->
+              <div class="col-md-6">
+                <label for="imageInput" class="form-label fw-semibold small">Image URL *</label>
+                <input type="url" class="form-control" id="imageInput" required placeholder="https://...">
+                <div class="invalid-feedback">Please provide a valid image URL.</div>
+              </div>
+
+              <!-- Distance & Duration -->
+              <div class="col-sm-6">
+                <label for="distanceInput" class="form-label fw-semibold small">Distance from Atulugama (km) *</label>
+                <input type="number" step="0.1" min="0" class="form-control" id="distanceInput" required placeholder="e.g. 5.0">
+                <div class="invalid-feedback">Enter a valid positive distance in km.</div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="durationInput" class="form-label fw-semibold small">Estimated Duration (hours) *</label>
+                <input type="number" step="0.1" min="0.1" max="12" class="form-control" id="durationInput" required placeholder="e.g. 2.0">
+                <div class="invalid-feedback">Enter estimated visiting duration in hours.</div>
+              </div>
+
+              <!-- GPS Coordinates -->
+              <div class="col-sm-6">
+                <label for="latitudeInput" class="form-label fw-semibold small">Latitude (GPS)</label>
+                <input type="number" step="0.000001" class="form-control" id="latitudeInput" placeholder="e.g. 6.7205">
+              </div>
+
+              <div class="col-sm-6">
+                <label for="longitudeInput" class="form-label fw-semibold small">Longitude (GPS)</label>
+                <input type="number" step="0.000001" class="form-control" id="longitudeInput" placeholder="e.g. 79.9880">
+              </div>
+
+              <!-- Extra Meta: Map Link, Best Time, Fee -->
+              <div class="col-md-4">
+                <label for="mapLinkInput" class="form-label fw-semibold small">Google Maps Link</label>
+                <input type="url" class="form-control" id="mapLinkInput" placeholder="https://maps.google.com/...">
+              </div>
+
+              <div class="col-md-4">
+                <label for="bestTimeInput" class="form-label fw-semibold small">Best Visiting Time</label>
+                <input type="text" class="form-control" id="bestTimeInput" placeholder="e.g. 04:00 PM - 06:30 PM">
+              </div>
+
+              <div class="col-md-4">
+                <label for="entryFeeInput" class="form-label fw-semibold small">Entry Fee / Ticket</label>
+                <input type="text" class="form-control" id="entryFeeInput" placeholder="e.g. Free admission">
+              </div>
+
+              <!-- Description -->
+              <div class="col-12">
+                <label for="descriptionInput" class="form-label fw-semibold small">Detailed Description *</label>
+                <textarea class="form-control" id="descriptionInput" rows="3" required maxlength="3000" placeholder="Provide a rich description of the attraction..."></textarea>
+                <div class="invalid-feedback">Please enter a description.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-subtle">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold" id="saveAttractionBtn">
+              <i class="bi bi-check-lg"></i> Save Attraction
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal (FR-046) -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger">
+            <i class="bi bi-exclamation-octagon-fill me-1"></i> Confirm Deletion
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-2">
+          <p class="mb-1 text-main">Are you sure you want to permanently delete this attraction record?</p>
+          <strong id="deleteAttractionName" class="text-primary fs-6"></strong>
+          <p class="text-muted small mt-2 mb-0">This action will remove the location from the catalog and the day planner.</p>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger btn-sm px-3" id="confirmDeleteBtn" onclick="AdminApp.confirmDelete()">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="adminToastContainer" style="z-index: 1090;"></div>
+
+  <!-- JavaScript Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Theme sync for Admin Portal
+    const currentTheme = localStorage.getItem('travelmate_theme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', currentTheme);
+    const themeIcon = document.getElementById('themeToggleIcon');
+    if (themeIcon) {
+      themeIcon.className = currentTheme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-warning';
+    }
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const nextTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-bs-theme', nextTheme);
+        localStorage.setItem('travelmate_theme', nextTheme);
+        if (themeIcon) {
+          themeIcon.className = nextTheme === 'dark' ? 'bi bi-sun-fill text-warning' : 'bi bi-moon-stars-fill text-warning';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

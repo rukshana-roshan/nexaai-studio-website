@@ -1,0 +1,13 @@
+R:\travelmate\src\main\java\com\travelmate\config\CorsConfig.java
+R:\travelmate\src\main\java\com\travelmate\config\DataInitializer.java
+R:\travelmate\src\main\java\com\travelmate\controller\AttractionController.java
+R:\travelmate\src\main\java\com\travelmate\controller\ItineraryController.java
+R:\travelmate\src\main\java\com\travelmate\dto\AttractionDTO.java
+R:\travelmate\src\main\java\com\travelmate\model\ItineraryPlan.java
+R:\travelmate\src\main\java\com\travelmate\model\ItineraryRequest.java
+R:\travelmate\src\main\java\com\travelmate\model\ItineraryStop.java
+R:\travelmate\src\main\java\com\travelmate\model\TouristAttraction.java
+R:\travelmate\src\main\java\com\travelmate\repository\TouristAttractionRepository.java
+R:\travelmate\src\main\java\com\travelmate\service\AttractionService.java
+R:\travelmate\src\main\java\com\travelmate\service\ItineraryPlannerService.java
+R:\travelmate\src\main\java\com\travelmate\TravelMateApplication.java
